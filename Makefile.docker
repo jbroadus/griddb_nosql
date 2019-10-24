@@ -1,0 +1,19 @@
+ROOT = $(shell realpath .)
+TAG = griddb-builder
+
+VOL_ARGS := -v $(ROOT):$(ROOT) -w $(ROOT)
+
+all: build
+
+.PHONY: docker
+docker:
+	docker build -t $(TAG) docker
+
+build config run: docker
+	docker run $(VOL_ARGS) $(TAG) make -f Makefile.docker _$@
+
+_config:
+	./configure
+
+_build: _config
+	make
